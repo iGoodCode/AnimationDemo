@@ -1,4 +1,4 @@
-package com.example.jinhui.animationdemo.Interpolator;
+package com.example.jinhui.animationdemo.interpolator;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

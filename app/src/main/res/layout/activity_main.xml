@@ -63,4 +63,12 @@
         android:layout_alignStart="@+id/alpha"
         android:layout_alignTop="@+id/tv"
         android:text="set" />
+
+    <Button
+        android:id="@+id/splash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/set"
+        android:layout_below="@+id/set"
+        android:text="渐变" />
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package com.example.jinhui.animationdemo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -7,7 +8,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
     Button set;
     @BindView(R.id.tv)
     TextView tv;
+    @BindView(R.id.splash)
+    Button splash;
 
 
     // 自定义控件三部曲之动画篇（二）——Interpolator插值器
-
     Animation scaleAnimation, alphaAnimation,
             rotateAnimation, transAnimation, setAnimation;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,5 +165,15 @@ public class MainActivity extends AppCompatActivity {
                 tv.startAnimation(setAnimation);
                 break;
         }
+    }
+
+    @OnClick(R.id.splash)
+    public void onViewClicked() {
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, SecondActivity.class);
+        startActivity(intent);
+
+        // 过渡界面，用于启动页
+        overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }
 }
