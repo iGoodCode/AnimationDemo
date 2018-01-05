@@ -1,8 +1,8 @@
 package com.example.jinhui.animationdemo.propertyanimator;
 
 import android.animation.Animator;
+import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +13,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jinhui.animationdemo.R;
+import com.example.jinhui.animationdemo.customevaluator.MyEvaluator;
+import com.example.jinhui.animationdemo.customevaluator.ReverseEvaluator;
+import com.example.jinhui.animationdemo.custominterpolator.MyInterpolator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -193,7 +196,8 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
                 // 动画监听
 //                repeatAnimator = doAnimatorListener();
                 // 重复动画
-                 doClone();
+//                 doClone();
+                repeatAnimator = doArgbAnimation();
 
 //                final TranslateAnimation animation = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 400,
 //                        Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 400);
@@ -217,11 +221,68 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
                  * 但注意的是，我们在移除AnimatorListener后，并没有cancel动画效果，
                  * 所以动画会一直不停的运动下去。但移除AnimatorListener之后，Log应该就不会再打印了。
                  */
-//                repeatAnimator.removeAllListeners();
-                cloneCancel();
+                repeatAnimator.removeAllListeners();
+                repeatAnimator.cancel();
+//                cloneCancel();
 
                 break;
         }
+    }
+
+    /**
+     * 我们上面讲了IntEvaluator和FloatEvalutor，还说了Evalutor一般来讲不能通用，会报强转错误，也就是说，只有在数值类型相同的情况下，Evalutor才能共用。
+     其实除了IntEvaluator和FloatEvalutor，在android.animation包下，还有另外一个Evalutor叫ArgbEvalutor。
+     ArgbEvalutor是用来做颜色值过渡转换的。可能是谷歌的开发人员觉得大家对颜色值变换可能并不知道要怎么做，所以特地给我们提供了这么一个过渡Evalutor；
+     我们先来简单看一下ArgbEvalutor的源码：
+     * 我们在这里关注两个地方，第一返回值是int类型，这说明我们可以使用ofInt()来初始化动画数值范围。
+     * 第二：颜色值包括A,R,G,B四个值，每个值是8位所以用16进制表示一个颜色值应该是0xffff0000（纯红色）
+     下面我们就使用一下ArgbEvaluator，并看看效果：
+
+     我们将动画的数据范围定义为(0xffffff00,0xff0000ff)，即从黄色，变为蓝色。
+     在监听中，我们根据当前传回来的颜色值，将其设置为textview的背景色
+
+     ArgbEvalutor的实现原理 :看源码：
+     这段代码分为三部分，第一部分根据startValue求出其中A,R,G,B中各个色彩的初始值；第二部分根据endValue求出其中A,R,G,B中各个色彩的结束值，最后是根据当前动画的百分比进度求出对应的数值
+     我们先来看第一部分：根据startValue求出其中A,R,G,B中各个色彩的初始值
+     int startInt = (Integer) startValue;
+     int startA = (startInt >> 24);
+     int startR = (startInt >> 16) & 0xff;
+     int startG = (startInt >> 8) & 0xff;
+     int startB = startInt & 0xff;
+     我们的初始值是0xffffff00,那么求出来的startA = 0xff,startR = oxff,startG = 0xff,startB = 0x00;
+     关于通过位移和与运算如何得到指定位的值的问题，我就不再讲了，大家如果不理解，可以搜一下相关运算符使用方法的文章。
+     同样，我们看看第二部分根据endValue求出其中A,R,G,B中各个色彩的结束值：
+     int endInt = (Integer) endValue;
+     int endA = (endInt >> 24);
+     int endR = (endInt >> 16) & 0xff;
+     int endG = (endInt >> 8) & 0xff;
+     int endB = endInt & 0xff;
+     原理与startValue求A,R,G,B对应值的一样，所以对于我们上面例子中初始值ofInt(0xffffff00,0xff0000ff)中的endValue:0xff0000ff所对应的endA = 0xff,endR = ox00;endG = 0x00;endB = 0xff;
+     最后一部分到了，就是如何根据进度来求得变化的值，我们先看看下面这句是什么意思：
+     startA + (int)(fraction * (endA - startA)))
+     对于这个公式大家应该很容易理解，与IntEvaluator中的计算公式一样，就是根据透明度A的初始值、结束值求得当前进度下透明度A应该的数值。
+     同理
+     startR + (int)(fraction * (endR - startR)表示当前进度下的红色值
+     startG + (int)(fraction * (endG - startG))表示当前进度下的绿色值
+     startB + (int)(fraction * (endB - startB))表示当前进度下的蓝色值
+     然后通过位移和或运算将当前进度下的A,R,G,B组合起来就是当前的颜色值了
+     */
+    private ValueAnimator doArgbAnimation() {
+        ValueAnimator animator = ValueAnimator.ofInt(0xffffff00,0xff0000ff);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.setDuration(3000);
+
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int curValue = (int)animation.getAnimatedValue();
+                tv.setBackgroundColor(curValue);
+
+            }
+        });
+
+        animator.start();
+        return animator;
     }
 
     /**
@@ -329,10 +390,22 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
      * textview的运动轨迹是从屏幕的左上角(0,0)点运行到（400，400）点。
      */
 
+    /**
+     * Evaluator其实就是一个转换器，他能把小数进度转换成对应的数值位置
+     *
+     * @return
+     */
     private ValueAnimator doAnimation() {
         ValueAnimator animator = ValueAnimator.ofInt(0, 400);
         animator.setDuration(1000);
 
+        /**
+         * curValue：计算当前的值 = 100 + （400 - 100）* 显示进度
+         * 类似于（当前的值 = 100 + （400 - 100）* 显示进度
+         其中100和400就是我们设置的ofInt(100,400)中的值，这个公式应该是比较容易理解的，就相当于我们做一个应用题：
+         小明从100的位置开始出发向400的位置开始跑去，在走到全程距离20%位置时，请问小明在哪个数字点上？
+         当前的值 = 100 + （400 -100）* 0.2； ）
+         */
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -342,8 +415,15 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
                 tv.layout(tv.getLeft(), curValue, tv.getRight(), curValue + tv.getHeight());
             }
         });
-        animator.setRepeatMode(ValueAnimator.REVERSE);
-        animator.setRepeatCount(ValueAnimator.INFINITE);
+//        animator.setRepeatMode(ValueAnimator.REVERSE);
+//        animator.setRepeatCount(ValueAnimator.INFINITE);
+//        本节补充插值器、转换器
+//        animator.setInterpolator(new BounceInterpolator());
+//        animator.setEvaluator(new IntEvaluator());
+//        animator.setEvaluator(new MyEvaluator());
+        // 实现倒序输出实例
+        animator.setEvaluator(new ReverseEvaluator());
+//        animator.setInterpolator(new MyInterpolator());
         animator.start();
 //        ValueAnimator animator = ValueAnimator.ofFloat(0f, 400f, 50f, 300f);
 //        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
