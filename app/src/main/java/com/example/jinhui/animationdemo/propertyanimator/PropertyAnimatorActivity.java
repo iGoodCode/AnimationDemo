@@ -8,14 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jinhui.animationdemo.R;
-import com.example.jinhui.animationdemo.customevaluator.MyEvaluator;
+import com.example.jinhui.animationdemo.customevaluator.CharEvaluator;
 import com.example.jinhui.animationdemo.customevaluator.ReverseEvaluator;
-import com.example.jinhui.animationdemo.custominterpolator.MyInterpolator;
+import com.example.jinhui.animationdemo.view.MyPointView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,7 +90,7 @@ import butterknife.OnClick;
  * setRepeatCount(int value)用于设置动画循环次数,设置为0表示不循环，设置为ValueAnimation.INFINITE表示无限循环。
  * cancel()用于取消动画
  * <p>
- *
+ * <p>
  * 两个监听器：添加监听器
  * <p>
  * AnimatorUpdateListener \\ AnimatorListener
@@ -108,7 +109,7 @@ import butterknife.OnClick;
  * void onAnimationRepeat(Animator animation);
  * }
  * //添加方法为：public void addListener(AnimatorListener listener)
- *
+ * <p>
  * 取消监听
  * // 移除AnimatorUpdateListener
  * void removeUpdateListener(AnimatorUpdateListener listener);
@@ -116,36 +117,50 @@ import butterknife.OnClick;
  * // 移除AnimatorListener
  * void removeListener(AnimatorListener listener);
  * void removeAllListeners();
- *
+ * <p>
  * 其它函数:
- *  上面我们讲了ValueAnimator中常用的一些函数，但是还有一些函数虽然不常用
- *
- *  延时多久时间开始，单位是毫秒
- *  public void setStartDelay(long startDelay)
- *  完全克隆一个ValueAnimator实例，包括它所有的设置以及所有对监听器代码的处理
- *  public ValueAnimator clone()
- *  setStartDelay(long startDelay)非常容易理解，就是设置多久后动画才开始。
- 但clone()这个函数就有点难度了；首先是什么叫克隆。就是完全一样！注意是完全一样！
- 就是复制出来一个完全一样的新的ValueAnimator实例出来。对原来的那个ValueAnimator是怎么处理的，在这个新的实例中也是全部一样的。
+ * 上面我们讲了ValueAnimator中常用的一些函数，但是还有一些函数虽然不常用
+ * <p>
+ * 延时多久时间开始，单位是毫秒
+ * public void setStartDelay(long startDelay)
+ * 完全克隆一个ValueAnimator实例，包括它所有的设置以及所有对监听器代码的处理
+ * public ValueAnimator clone()
+ * setStartDelay(long startDelay)非常容易理解，就是设置多久后动画才开始。
+ * 但clone()这个函数就有点难度了；首先是什么叫克隆。就是完全一样！注意是完全一样！
+ * 就是复制出来一个完全一样的新的ValueAnimator实例出来。对原来的那个ValueAnimator是怎么处理的，在这个新的实例中也是全部一样的。
  */
 public class PropertyAnimatorActivity extends AppCompatActivity {
 
     private static final String TAG = PropertyAnimatorActivity.class.getSimpleName();
-    @BindView(R.id.btn)
-    Button btn;
+
     @BindView(R.id.tv)
     TextView tv;
     @BindView(R.id.bt_cancel_anim)
     Button btCancelAnim;
+    @BindView(R.id.bt_doAnimation)
+    Button btDoAnimation;
+    @BindView(R.id.bt_doAnimatorListener)
+    Button btDoAnimatorListener;
+    @BindView(R.id.bt_clone)
+    Button btClone;
+    @BindView(R.id.bt_ofObject)
+    Button btOfObject;
+    @BindView(R.id.bt_pointAnim)
+    Button btPointAnim;
+    @BindView(R.id.bt_doArgbAnimation)
+    Button btDoArgbAnimation;
+    @BindView(R.id.bt_cancel_clone)
+    Button btCancelClone;
     private ValueAnimator repeatAnimator;
     ValueAnimator newAnimator;
+    private MyPointView mPointView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_propertyanimator);
         ButterKnife.bind(this);
-
+        mPointView = (MyPointView)findViewById(R.id.pointview);
         /**
          * 在上面的代码中，我们通过addUpdateListener添加了一个监听，在监听传回的结果中，是表示当前状态的ValueAnimator实例，我们通过animation.getAnimatedValue()得到当前值。
          * 然后通过Log打印出来，结果如下：
@@ -187,18 +202,13 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.btn, R.id.tv, R.id.bt_cancel_anim})
+    @OnClick({R.id.bt_doAnimation, R.id.tv, R.id.bt_doArgbAnimation, R.id.bt_cancel_anim,
+            R.id.bt_doAnimatorListener, R.id.bt_clone, R.id.bt_ofObject, R.id.bt_pointAnim, R.id.bt_cancel_clone})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.btn:
+            case R.id.bt_doAnimation:
                 // 基本动画
-//                repeatAnimator = doAnimation();
-                // 动画监听
-//                repeatAnimator = doAnimatorListener();
-                // 重复动画
-//                 doClone();
-                repeatAnimator = doArgbAnimation();
-
+                repeatAnimator = doAnimation();
 //                final TranslateAnimation animation = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 400,
 //                        Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 400);
 //                animation.setFillAfter(true);
@@ -207,6 +217,26 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
                 break;
             case R.id.tv:
                 Toast.makeText(this, "clicked me", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.bt_doAnimatorListener:
+                // 动画监听
+                repeatAnimator = doAnimatorListener();
+                break;
+            case R.id.bt_ofObject:
+                repeatAnimator = doOfObject();
+                break;
+            case R.id.bt_clone:
+                // 重复动画
+                doClone();
+                break;
+            case R.id.bt_cancel_clone:
+                cancelClone();
+                break;
+            case R.id.bt_doArgbAnimation:
+                repeatAnimator = doArgbAnimation();
+                break;
+            case R.id.bt_pointAnim:
+                mPointView.doPointAnim();
                 break;
             case R.id.bt_cancel_anim:
                 /**
@@ -223,59 +253,81 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
                  */
                 repeatAnimator.removeAllListeners();
                 repeatAnimator.cancel();
-//                cloneCancel();
 
                 break;
         }
     }
 
+
+    /**
+     * 前面我们讲了ofInt()和ofFloat()来定义动画，但ofInt()只能传入Integer类型的值，而ofFloat（）则只能传入Float类型的值。
+     * 那如果我们需要操作其它类型的变量要怎么办呢？其实ValueAnimator还有一个函数ofObject(),可以传进去任何类型的变量，定义如下：
+     *
+     * @return
+     */
+    private ValueAnimator doOfObject() {
+//        ValueAnimator animator = ValueAnimator.ofObject(new CharEvaluator(),new Character('A'),new Character('Z'));
+        ValueAnimator animator = ValueAnimator.ofObject(new CharEvaluator(), 'A', 'Z');
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                char text = (char) animation.getAnimatedValue();
+                tv.setText(String.valueOf(text));
+            }
+        });
+        animator.setDuration(10000);
+        animator.setInterpolator(new AccelerateInterpolator());
+        animator.start();
+        return animator;
+    }
+
     /**
      * 我们上面讲了IntEvaluator和FloatEvalutor，还说了Evalutor一般来讲不能通用，会报强转错误，也就是说，只有在数值类型相同的情况下，Evalutor才能共用。
-     其实除了IntEvaluator和FloatEvalutor，在android.animation包下，还有另外一个Evalutor叫ArgbEvalutor。
-     ArgbEvalutor是用来做颜色值过渡转换的。可能是谷歌的开发人员觉得大家对颜色值变换可能并不知道要怎么做，所以特地给我们提供了这么一个过渡Evalutor；
-     我们先来简单看一下ArgbEvalutor的源码：
+     * 其实除了IntEvaluator和FloatEvalutor，在android.animation包下，还有另外一个Evalutor叫ArgbEvalutor。
+     * ArgbEvalutor是用来做颜色值过渡转换的。可能是谷歌的开发人员觉得大家对颜色值变换可能并不知道要怎么做，所以特地给我们提供了这么一个过渡Evalutor；
+     * 我们先来简单看一下ArgbEvalutor的源码：
      * 我们在这里关注两个地方，第一返回值是int类型，这说明我们可以使用ofInt()来初始化动画数值范围。
      * 第二：颜色值包括A,R,G,B四个值，每个值是8位所以用16进制表示一个颜色值应该是0xffff0000（纯红色）
-     下面我们就使用一下ArgbEvaluator，并看看效果：
-
-     我们将动画的数据范围定义为(0xffffff00,0xff0000ff)，即从黄色，变为蓝色。
-     在监听中，我们根据当前传回来的颜色值，将其设置为textview的背景色
-
-     ArgbEvalutor的实现原理 :看源码：
-     这段代码分为三部分，第一部分根据startValue求出其中A,R,G,B中各个色彩的初始值；第二部分根据endValue求出其中A,R,G,B中各个色彩的结束值，最后是根据当前动画的百分比进度求出对应的数值
-     我们先来看第一部分：根据startValue求出其中A,R,G,B中各个色彩的初始值
-     int startInt = (Integer) startValue;
-     int startA = (startInt >> 24);
-     int startR = (startInt >> 16) & 0xff;
-     int startG = (startInt >> 8) & 0xff;
-     int startB = startInt & 0xff;
-     我们的初始值是0xffffff00,那么求出来的startA = 0xff,startR = oxff,startG = 0xff,startB = 0x00;
-     关于通过位移和与运算如何得到指定位的值的问题，我就不再讲了，大家如果不理解，可以搜一下相关运算符使用方法的文章。
-     同样，我们看看第二部分根据endValue求出其中A,R,G,B中各个色彩的结束值：
-     int endInt = (Integer) endValue;
-     int endA = (endInt >> 24);
-     int endR = (endInt >> 16) & 0xff;
-     int endG = (endInt >> 8) & 0xff;
-     int endB = endInt & 0xff;
-     原理与startValue求A,R,G,B对应值的一样，所以对于我们上面例子中初始值ofInt(0xffffff00,0xff0000ff)中的endValue:0xff0000ff所对应的endA = 0xff,endR = ox00;endG = 0x00;endB = 0xff;
-     最后一部分到了，就是如何根据进度来求得变化的值，我们先看看下面这句是什么意思：
-     startA + (int)(fraction * (endA - startA)))
-     对于这个公式大家应该很容易理解，与IntEvaluator中的计算公式一样，就是根据透明度A的初始值、结束值求得当前进度下透明度A应该的数值。
-     同理
-     startR + (int)(fraction * (endR - startR)表示当前进度下的红色值
-     startG + (int)(fraction * (endG - startG))表示当前进度下的绿色值
-     startB + (int)(fraction * (endB - startB))表示当前进度下的蓝色值
-     然后通过位移和或运算将当前进度下的A,R,G,B组合起来就是当前的颜色值了
+     * 下面我们就使用一下ArgbEvaluator，并看看效果：
+     * <p>
+     * 我们将动画的数据范围定义为(0xffffff00,0xff0000ff)，即从黄色，变为蓝色。
+     * 在监听中，我们根据当前传回来的颜色值，将其设置为textview的背景色
+     * <p>
+     * ArgbEvalutor的实现原理 :看源码：
+     * 这段代码分为三部分，第一部分根据startValue求出其中A,R,G,B中各个色彩的初始值；第二部分根据endValue求出其中A,R,G,B中各个色彩的结束值，最后是根据当前动画的百分比进度求出对应的数值
+     * 我们先来看第一部分：根据startValue求出其中A,R,G,B中各个色彩的初始值
+     * int startInt = (Integer) startValue;
+     * int startA = (startInt >> 24);
+     * int startR = (startInt >> 16) & 0xff;
+     * int startG = (startInt >> 8) & 0xff;
+     * int startB = startInt & 0xff;
+     * 我们的初始值是0xffffff00,那么求出来的startA = 0xff,startR = oxff,startG = 0xff,startB = 0x00;
+     * 关于通过位移和与运算如何得到指定位的值的问题，我就不再讲了，大家如果不理解，可以搜一下相关运算符使用方法的文章。
+     * 同样，我们看看第二部分根据endValue求出其中A,R,G,B中各个色彩的结束值：
+     * int endInt = (Integer) endValue;
+     * int endA = (endInt >> 24);
+     * int endR = (endInt >> 16) & 0xff;
+     * int endG = (endInt >> 8) & 0xff;
+     * int endB = endInt & 0xff;
+     * 原理与startValue求A,R,G,B对应值的一样，所以对于我们上面例子中初始值ofInt(0xffffff00,0xff0000ff)中的endValue:0xff0000ff所对应的endA = 0xff,endR = ox00;endG = 0x00;endB = 0xff;
+     * 最后一部分到了，就是如何根据进度来求得变化的值，我们先看看下面这句是什么意思：
+     * startA + (int)(fraction * (endA - startA)))
+     * 对于这个公式大家应该很容易理解，与IntEvaluator中的计算公式一样，就是根据透明度A的初始值、结束值求得当前进度下透明度A应该的数值。
+     * 同理
+     * startR + (int)(fraction * (endR - startR)表示当前进度下的红色值
+     * startG + (int)(fraction * (endG - startG))表示当前进度下的绿色值
+     * startB + (int)(fraction * (endB - startB))表示当前进度下的蓝色值
+     * 然后通过位移和或运算将当前进度下的A,R,G,B组合起来就是当前的颜色值了
      */
     private ValueAnimator doArgbAnimation() {
-        ValueAnimator animator = ValueAnimator.ofInt(0xffffff00,0xff0000ff);
+        ValueAnimator animator = ValueAnimator.ofInt(0xffffff00, 0xff0000ff);
         animator.setEvaluator(new ArgbEvaluator());
         animator.setDuration(3000);
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                int curValue = (int)animation.getAnimatedValue();
+                int curValue = (int) animation.getAnimatedValue();
                 tv.setBackgroundColor(curValue);
 
             }
@@ -290,7 +342,7 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
      * 必须当然是没用的，因为我们start的动画对象是从repeatAnimator克隆来的newAnimator。这好比是克隆羊，原来的羊和克隆羊什么都是一样的，但你把原来的羊杀了，克隆的羊会死吗？用大脚指头想都知道不会！
      * 所以如果要取消当前的动画必须通过newAnimator.cancel()来取消
      */
-    private void cloneCancel() {
+    private void cancelClone() {
 //        repeatAnimator.removeAllUpdateListeners();
 //        repeatAnimator.cancel();
         newAnimator.cancel();
@@ -309,13 +361,13 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
     }
 
     private ValueAnimator doRepeatAnim() {
-        ValueAnimator animator = ValueAnimator.ofInt(0,400);
+        ValueAnimator animator = ValueAnimator.ofInt(0, 400);
 
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                int curValue = (int)animation.getAnimatedValue();
-                tv.layout(tv.getLeft(),curValue,tv.getRight(),curValue+tv.getHeight());
+                int curValue = (int) animation.getAnimatedValue();
+                tv.layout(tv.getLeft(), curValue, tv.getRight(), curValue + tv.getHeight());
             }
         });
         animator.setDuration(1000);

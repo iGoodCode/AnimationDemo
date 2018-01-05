@@ -4,11 +4,42 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="start anim" />
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
+        <Button
+            android:id="@+id/bt_doAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="基本动画" />
+        <Button
+            android:id="@+id/bt_doAnimatorListener"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="动画监听" />
+        <Button
+            android:id="@+id/bt_clone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="克隆" />
+        <Button
+            android:id="@+id/bt_ofObject"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OfObject" />
+        <Button
+            android:id="@+id/bt_doArgbAnimation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="doArgbAnimation" />
+        <Button
+            android:id="@+id/bt_pointAnim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PointAnim" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv"
@@ -26,4 +57,18 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:text="cancel anim" />
+    <Button
+        android:id="@+id/bt_cancel_clone"
+        android:layout_below="@+id/bt_cancel_anim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:text="cancel clone" />
+
+    <com.example.jinhui.animationdemo.view.MyPointView
+        android:id="@+id/pointview"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
