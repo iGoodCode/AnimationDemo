@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <scale xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fromXScale="0.0"
-    android:toXScale="1.4"
-    android:fromYScale="0.0"
-    android:toYScale="1.4"
-    android:pivotX="50%"
-    android:pivotY="50%"
     android:duration="700"
     android:fillBefore="true"
+    android:fromXScale="0.0"
+    android:fromYScale="0.0"
+    android:pivotX="50%"
+    android:pivotY="50%"
     android:repeatCount="1"
     android:repeatMode="reverse"
-    />
+    android:toXScale="1.4"
+    android:toYScale="1.4" />
 
     <!--
     android:repeatMode
@@ -27,8 +26,7 @@
      or in percentage relative to the parent container's left edge (such as "5%p").
 
     android:pivotX="50%p" 表示在他的原点上，加上父亲X轴宽度的50%；高度同理
-    -->
-    <!--
+    --><!--
     Animation变化坐标点的参照类型
 
     上面看到，RotateAnimation、ScaleAnimation、TranslateAnimation都存在一对pivotXType，pivotYType参数，

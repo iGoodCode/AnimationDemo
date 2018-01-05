@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.jinhui.animationdemo.animation.AnimationActivity;
 import com.example.jinhui.animationdemo.baseanim.BaseAnimActivity;
 import com.example.jinhui.animationdemo.interpolator.InterpolatorActivity;
 
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     Button btBase;
     @BindView(R.id.bt_interpolator)
     Button btInterpolator;
+    @BindView(R.id.bt_xml)
+    Button btXml;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.bt_base, R.id.bt_interpolator})
+    @OnClick({R.id.bt_base, R.id.bt_interpolator, R.id.bt_xml})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_base:
@@ -42,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bt_interpolator:
                 startActivity(new Intent(this, InterpolatorActivity.class));
                 break;
+            case R.id.bt_xml:
+                startActivity(new Intent(this, AnimationActivity.class));
+                break;
         }
     }
+
+
 }

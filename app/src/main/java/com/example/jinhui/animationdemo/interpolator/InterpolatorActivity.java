@@ -71,6 +71,7 @@ public class InterpolatorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_interpolator);
         ButterKnife.bind(this);
 
+        // scale标签
         accelerate_decelerate = AnimationUtils.loadAnimation(this, R.anim.interpolator_accelerate_decelerate);
         accelerate = AnimationUtils.loadAnimation(this, R.anim.interpolator_accelerate);
         decelerate = AnimationUtils.loadAnimation(this, R.anim.interpolator_decelerate);
@@ -80,6 +81,12 @@ public class InterpolatorActivity extends AppCompatActivity {
         cycle = AnimationUtils.loadAnimation(this, R.anim.interpolator_cycle);
         linear = AnimationUtils.loadAnimation(this, R.anim.interpolator_linear);
         overshoot = AnimationUtils.loadAnimation(this, R.anim.interpolator_overshoot);
+        // rotate标签
+        Animation accelerate_decelerate_rotate = AnimationUtils.loadAnimation(this, R.anim.interpolator_accelerate_decelerate_rotate);
+        // alpha标签
+        Animation accelerate_decelerate_alpha = AnimationUtils.loadAnimation(this, R.anim.interpolator_accelerate_decelerate_alpha);
+        // translate标签
+        Animation accelerate_decelerate_translate = AnimationUtils.loadAnimation(this, R.anim.interpolator_accelerate_decelerate_translate);
     }
 
     @OnClick({R.id.button, R.id.button2, R.id.button3, R.id.button4, R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
