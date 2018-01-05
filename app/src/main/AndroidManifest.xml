@@ -19,6 +19,8 @@
 
         <activity android:name=".interpolator.InterpolatorActivity"/>
         <activity android:name=".SecondActivity"/>
+        <activity android:name=".baseanim.BaseAnimActivity"/>
+
     </application>
 
 </manifest>
