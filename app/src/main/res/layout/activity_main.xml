@@ -16,10 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Interpolator插值器" />
-
+v
     <Button
         android:id="@+id/bt_xml"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="动态生成动画" />
+    <Button
+        android:id="@+id/bt_valueAnimator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="属性动画" />
 </LinearLayout>
