@@ -24,6 +24,8 @@ public class MyPointView extends View {
     private Point mCurPoint;
     Paint paint;
 
+    Point mPoint = new Point(100);
+
     public MyPointView(Context context) {
         super(context);
     }
@@ -40,11 +42,21 @@ public class MyPointView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(300, 300, mCurPoint.getRadius(), paint);
+//        if(mCurPoint != null){
+//            paint = new Paint();
+//            paint.setAntiAlias(true);
+//            paint.setColor(Color.RED);
+//            paint.setStyle(Paint.Style.FILL);
+//            canvas.drawCircle(300, 300, mCurPoint.getRadius(), paint);
+//        }
+        if (mPoint != null){
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setColor(Color.RED);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawCircle(300,300,mPoint.getRadius(),paint);
+        }
+
 
     }
 
@@ -54,11 +66,27 @@ public class MyPointView extends View {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 mCurPoint = (Point) animation.getAnimatedValue();
-                invalidate();
+                invalidate();  // 调用ondraw()方法
             }
         });
         animator.setDuration(1000);
         animator.setInterpolator(new BounceInterpolator());
         animator.start();
+    }
+
+    /**
+     *
+     * 从动画中可以看出，半径已经不是从0开始的了，而是从50开始的。
+     // 最后我们总结一下：当且仅当动画的只有一个过渡值时，系统才会调用对应属性的get函数来得到动画的初始值。
+     * @return
+     */
+    public int getPointRadius(){
+        return 50;
+    }
+    // 添加这个set方法
+    void setPointRadius(int radius){
+
+        mPoint.setRadius(radius);
+        invalidate();
     }
 }

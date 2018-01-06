@@ -2,6 +2,7 @@ package com.example.jinhui.animationdemo.propertyanimator;
 
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -151,6 +152,12 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
     Button btDoArgbAnimation;
     @BindView(R.id.bt_cancel_clone)
     Button btCancelClone;
+    @BindView(R.id.bt_alpha)
+    Button btAlpha;
+    @BindView(R.id.bt_rotate)
+    Button btRotate;
+    @BindView(R.id.bt_background)
+    Button btBackground;
     private ValueAnimator repeatAnimator;
     ValueAnimator newAnimator;
     private MyPointView mPointView;
@@ -160,7 +167,7 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_propertyanimator);
         ButterKnife.bind(this);
-        mPointView = (MyPointView)findViewById(R.id.pointview);
+        mPointView = (MyPointView) findViewById(R.id.pointview);
         /**
          * 在上面的代码中，我们通过addUpdateListener添加了一个监听，在监听传回的结果中，是表示当前状态的ValueAnimator实例，我们通过animation.getAnimatedValue()得到当前值。
          * 然后通过Log打印出来，结果如下：
@@ -203,7 +210,8 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
     }
 
     @OnClick({R.id.bt_doAnimation, R.id.tv, R.id.bt_doArgbAnimation, R.id.bt_cancel_anim,
-            R.id.bt_doAnimatorListener, R.id.bt_clone, R.id.bt_ofObject, R.id.bt_pointAnim, R.id.bt_cancel_clone})
+            R.id.bt_doAnimatorListener, R.id.bt_clone, R.id.bt_ofObject, R.id.bt_pointAnim,
+            R.id.bt_cancel_clone, R.id.bt_alpha, R.id.bt_rotate, R.id.bt_background})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_doAnimation:
@@ -229,6 +237,15 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
                 // 重复动画
                 doClone();
                 break;
+            case R.id.bt_alpha:
+                changeAlpha();
+                break;
+            case R.id.bt_rotate:
+                changeRotate();
+                break;
+            case R.id.bt_background:
+                changeBackground();
+                break;
             case R.id.bt_cancel_clone:
                 cancelClone();
                 break;
@@ -236,7 +253,9 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
                 repeatAnimator = doArgbAnimation();
                 break;
             case R.id.bt_pointAnim:
-                mPointView.doPointAnim();
+//                mPointView.doPointAnim();
+                // 自定义ObjectAnimator的方法，view已经添加set方法
+                doPointViewAnimation();
                 break;
             case R.id.bt_cancel_anim:
                 /**
@@ -256,6 +275,128 @@ public class PropertyAnimatorActivity extends AppCompatActivity {
 
                 break;
         }
+    }
+
+    /**
+     * 常用函数
+     * 使用ArgbEvaluator
+     * TextView有一个set函数能够改变背景色 public void setBackgroundColor(int color);
+     * 其它函数
+     */
+    private void changeBackground() {
+        ObjectAnimator animator = ObjectAnimator.ofInt(tv, "BackgroundColor", 0xffff00ff, 0xffffff00, 0xffff00ff);
+        animator.setDuration(8000);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.start();
+    }
+
+    /**
+     * 在上面的三个构造方法中最后一个参数都是可变长参数。我们也讲了，他们的意义就是从哪个值变到哪个值的。
+     * 那么问题来了：前面我们都是定义多个值，即至少两个值之间的变化，那如果我们只定义一个值呢，如下面的方式：(同样以MyPointView为例)
+     * 我们点了三次start anim按钮，所以这里也报了三次，意思就是没找到pointRadius属性所对应的getPointRadius()函数；
+     * 仅且仅当我们只给动画设置一个值时，程序才会调用属性对应的get函数来得到动画初始值。如果动画没有初始值，那么就会使用系统默认值。比如ofInt（）中使用的参数类型是int类型的，而系统的Int值的默认值是0，所以动画就会从0运动到100；也就是系统虽然在找到不到属性对应的get函数时，会给出警告，但同时会用系统默认值做为动画初始值。
+     * 如果通过给自定义控件MyPointView设置了get函数，那么将会以get函数的返回值做为初始值：
+     * W/PropertyValuesHolder: Method getPointRadius() with type null not found on target class class com.example.jinhui.animationdemo.view.MyPointView
+     */
+    private void doPointViewAnimation() {
+//        ObjectAnimator animator = ObjectAnimator.ofInt(mPointView, "pointRadius", 0, 300, 100);
+//        animator.setDuration(2000);
+//        animator.start();
+
+        ObjectAnimator animator = ObjectAnimator.ofInt(mPointView, "pointRadius", 100);
+        animator.setDuration(2000);
+        animator.start();
+    }
+
+    /**
+     * setter函数
+     * 我们再回来看构造改变rotation值的ObjectAnimator的方法ObjectAnimator animator = ObjectAnimator.ofFloat(tv,"rotation",0,180,0);
+     * TextView控件有rotation这个属性吗？没有，不光TextView没有，连它的父类View中也没有这个属性。那它是怎么来改变这个值的呢？
+     * 其实，ObjectAnimator做动画，并不是根据控件xml中的属性来改变的，而是通过指定属性所对应的set方法来改变的。
+     * 比如，我们上面指定的改变rotation的属性值，ObjectAnimator在做动画时就会到指定控件（TextView）中去找对应的setRotation()方法来改变控件中对应的值。
+     * 同样的道理，当我们在最开始的示例代码中，指定改变”alpha”属性值的时候，ObjectAnimator也会到TextView中去找对应的setAlpha()方法。那TextView中都有这些方法吗，
+     * 有的，这些方法都是从View中继承过来的，在View中有关动画，总共有下面几组set方法：
+     *
+     *    //1、透明度：alpha
+     public void setAlpha(float alpha)
+
+     //2、旋转度数：rotation、rotationX、rotationY
+     public void setRotation(float rotation)
+     public void setRotationX(float rotationX)
+     public void setRotationY(float rotationY)
+
+     //3、平移：translationX、translationY
+     public void setTranslationX(float translationX)
+     public void setTranslationY(float translationY)
+
+     //缩放：scaleX、scaleY
+     public void setScaleX(float scaleX)
+     public void setScaleY(float scaleY)
+
+     在开始逐个看这些函数的使用方法前，我们先做一个总结：
+     1、要使用ObjectAnimator来构造对画，要操作的控件中，必须存在对应的属性的set方法
+     2、setter 方法的命名必须以骆驼拼写法命名，即set后每个单词首字母大写，其余字母小写，即类似于setPropertyName所对应的属性为propertyName
+     *
+     * setRotationX、setRotationY与setRotation
+     * setRotationX(float rotationX)：表示围绕X轴旋转，rotationX表示旋转度数
+     setRotationY(rotationY):表示围绕Y轴旋转，rotationY表示旋转度数
+     setRotation(float rotation):表示围绕Z旋转,rotation表示旋转度数
+     setRotation是围绕Z轴旋转的
+
+     setTranslationX与setTranslationY
+     setTranslationX(float translationX) :表示在X轴上的平移距离,以当前控件为原点，向右为正方向，参数translationX表示移动的距离。
+     setTranslationY(float translationY) :表示在Y轴上的平移距离，以当前控件为原点，向下为正方向，参数translationY表示移动的距离。
+
+     setScaleX与setScaleY
+     setScaleX(float scaleX):在X轴上缩放，scaleX表示缩放倍数
+     setScaleY(float scaleY):在Y轴上缩放，scaleY表示缩放倍数
+     *
+     */
+
+    /**
+     * ObjectAnimator动画原理
+     */
+    private void changeRotate() {
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(tv,"rotation",0,180,0);
+//        animator.setDuration(2000);
+//        animator.start();
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(tv,"rotationX",0,270,0);
+//        animator.setDuration(2000);
+//        animator.start();
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(tv,"rotationY",0,180,0);
+//        animator.setDuration(2000);
+//        animator.start();
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(tv,"rotation",0,270,0);
+//        animator.setDuration(2000);
+//        animator.start();
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(tv, "translationX", 0, 200, -200,0);
+//        animator.setDuration(2000);
+//        animator.start();
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(tv, "translationY", 0, 200, -100,0);
+//        animator.setDuration(2000);
+//        animator.start();
+//        ObjectAnimator animator = ObjectAnimator.ofFloat(tv, "scaleX", 0, 3, 1);
+//        animator.setDuration(2000);
+//        animator.start();
+        ObjectAnimator animator = ObjectAnimator.ofFloat(tv, "scaleY", 0, 3, 1);
+        animator.setDuration(2000);
+        animator.start();
+    }
+
+    /**
+     * 上几篇给大家讲了ValueAnimator，但ValueAnimator有个缺点，就是只能对数值对动画计算。我们要想对哪个控件操作，需要监听动画过程，在监听中对控件操作。这样使用起来相比补间动画而言就相对比较麻烦。
+     * 为了能让动画直接与对应控件相关联，以使我们从监听动画过程中解放出来，谷歌的开发人员在ValueAnimator的基础上，又派生了一个类ObjectAnimator;
+     * 由于ObjectAnimator是派生自ValueAnimator的，所以ValueAnimator中所能使用的方法，在ObjectAnimator中都可以正常使用。
+     * 但ObjectAnimator也重写了几个方法，比如ofInt(),ofFloat()等。我们先看看利用ObjectAnimator重写的ofFloat方法如何实现一个动画：（改变透明度）
+     * <p>
+     * 第一个参数用于指定这个动画要操作的是哪个控件
+     * 第二个参数用于指定这个动画要操作这个控件的哪个属性
+     * 第三个参数是可变长参数，这个就跟ValueAnimator中的可变长参数的意义一样了，就是指这个属性值是从哪变到哪。像我们上面的代码中指定的就是将textview的alpha属性从0变到1再变到0；
+     */
+    private void changeAlpha() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(tv, "alpha", 1, 0, 1);
+        animator.setDuration(2000);
+        animator.start();
     }
 
 

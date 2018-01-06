@@ -55,64 +55,59 @@ public class AnimationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_animation);
         ButterKnife.bind(this);
 
-        // ScaleAnimation
-        scaleAnim = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        scaleAnim.setDuration(700);
-
-        // AlphaAnimation
-        alphaAnim = new AlphaAnimation(1.0f, 0.1f);
-        alphaAnim.setDuration(3000);
-        alphaAnim.setFillBefore(true);
-
-        // RotateAnimation
-        rotateAnim = new RotateAnimation(0, -650, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnim.setDuration(3000);
-        rotateAnim.setFillAfter(true);
-
-        // TranslateAnimation
-        translateAnim = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -80,
-                Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -80);
-        translateAnim.setDuration(2000);
-        translateAnim.setFillBefore(true);
-
-        // AnimationSet
-        alphaAnim = new AlphaAnimation(1.0f, 0.1f);
-        scaleAnim = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnim = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-
-        setAnim = new AnimationSet(true);
-        setAnim.addAnimation(alphaAnim);
-        setAnim.addAnimation(scaleAnim);
-        setAnim.addAnimation(rotateAnim);
-        setAnim.setDuration(3000);
-        setAnim.setFillAfter(true);
-
-        // Interpolator使用
-        interpolateScaleAnim = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        // Interpolator使用——setInterpolator方法
-        interpolateScaleAnim.setInterpolator(new BounceInterpolator());
-        interpolateScaleAnim.setDuration(3000);
     }
 
     @OnClick({R.id.bt_alpha_anim, R.id.bt_scale_anim, R.id.bt_translate_anim, R.id.bt_rotate_anim, R.id.bt_set_anim, R.id.bt_interpolator})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_alpha_anim:
+                // AlphaAnimation
+                alphaAnim = new AlphaAnimation(1.0f, 0.1f);
+                alphaAnim.setDuration(3000);
+                alphaAnim.setFillBefore(true);
                 tv.startAnimation(alphaAnim);
                 break;
             case R.id.bt_scale_anim:
+                // ScaleAnimation
+                scaleAnim = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                scaleAnim.setDuration(700);
                 tv.startAnimation(scaleAnim);
                 break;
             case R.id.bt_translate_anim:
+                // TranslateAnimation
+                translateAnim = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -80,
+                        Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -80);
+                translateAnim.setDuration(2000);
+                translateAnim.setFillBefore(true);
                 tv.startAnimation(translateAnim);
                 break;
             case R.id.bt_rotate_anim:
+                // RotateAnimation
+                rotateAnim = new RotateAnimation(0, -650, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotateAnim.setDuration(3000);
+                rotateAnim.setFillAfter(true);
                 tv.startAnimation(rotateAnim);
                 break;
             case R.id.bt_set_anim:
+                // AnimationSet
+                alphaAnim = new AlphaAnimation(1.0f, 0.1f);
+                scaleAnim = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotateAnim = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+
+                setAnim = new AnimationSet(true);
+                setAnim.addAnimation(alphaAnim);
+                setAnim.addAnimation(scaleAnim);
+                setAnim.addAnimation(rotateAnim);
+                setAnim.setDuration(3000);
+                setAnim.setFillAfter(true);
                 tv.startAnimation(setAnim);
                 break;
             case R.id.bt_interpolator:
+                // Interpolator使用
+                interpolateScaleAnim = new ScaleAnimation(0.0f, 1.4f, 0.0f, 1.4f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                // Interpolator使用——setInterpolator方法
+                interpolateScaleAnim.setInterpolator(new BounceInterpolator());
+                interpolateScaleAnim.setDuration(3000);
                 tv.startAnimation(interpolateScaleAnim);
                 break;
         }
