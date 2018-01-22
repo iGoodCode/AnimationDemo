@@ -79,7 +79,7 @@ public class MyPointView extends View {
      * 从动画中可以看出，半径已经不是从0开始的了，而是从50开始的。
      // 最后我们总结一下：当且仅当动画的只有一个过渡值时，系统才会调用对应属性的get函数来得到动画的初始值。
      * @return
-     */
+     */ 
     public int getPointRadius(){
         return 50;
     }

@@ -9,7 +9,7 @@
         android:id="@+id/bt_base"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="基础动画" />
+        android:text="View Animation(视图动画)之基础动画" />
 
     <Button
         android:id="@+id/bt_interpolator"
@@ -21,10 +21,15 @@ v
         android:id="@+id/bt_xml"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="动态生成动画" />
+        android:text="View Animation(视图动画)之动态生成动画" />
     <Button
         android:id="@+id/bt_valueAnimator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="属性动画" />
+        android:text="Property Animator（属性动画）" />
+    <Button
+        android:id="@+id/bt_ofPropertyValuesHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Property Animator（属性动画）之ofPropertyValuesHolder" />
 </LinearLayout>
