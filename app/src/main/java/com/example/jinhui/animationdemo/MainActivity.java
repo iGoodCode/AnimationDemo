@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.jinhui.animationdemo.propertyvaluesholder.OfPropertyValuesHolderActivity;
 import com.example.jinhui.animationdemo.animation.AnimationActivity;
 import com.example.jinhui.animationdemo.baseanim.BaseAnimActivity;
 import com.example.jinhui.animationdemo.interpolator.InterpolatorActivity;
@@ -39,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.bt_base, R.id.bt_interpolator, R.id.bt_xml, R.id.bt_valueAnimator})
+    @OnClick({R.id.bt_base, R.id.bt_interpolator, R.id.bt_xml, R.id.bt_valueAnimator,
+            R.id.bt_ofPropertyValuesHolder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_base:
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bt_valueAnimator:
                 startActivity(new Intent(this, PropertyAnimatorActivity.class));
+                break;
+            case R.id.bt_ofPropertyValuesHolder:
+                startActivity(new Intent(this, OfPropertyValuesHolderActivity.class));
                 break;
 
         }

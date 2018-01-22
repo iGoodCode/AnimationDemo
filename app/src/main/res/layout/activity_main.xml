@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Interpolator插值器" />
-v
+
     <Button
         android:id="@+id/bt_xml"
         android:layout_width="match_parent"
@@ -31,5 +31,5 @@ v
         android:id="@+id/bt_ofPropertyValuesHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Property Animator（属性动画）之ofPropertyValuesHolder" />
+        android:text="Property Animator（属性动画）之PropertyValuesHolder与Keyframe" />
 </LinearLayout>
