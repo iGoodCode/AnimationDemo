@@ -23,6 +23,7 @@
         <activity android:name=".animation.AnimationActivity"/>
         <activity android:name=".propertyanimator.PropertyAnimatorActivity"/>
         <activity android:name=".propertyvaluesholder.OfPropertyValuesHolderActivity"/>
+        <activity android:name=".animatorset.AnimatorSetActivity"/>
 
     </application>
 

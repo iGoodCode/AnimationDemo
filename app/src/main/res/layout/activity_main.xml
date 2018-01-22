@@ -32,4 +32,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Property Animator（属性动画）之PropertyValuesHolder与Keyframe" />
+
+    <Button
+        android:id="@+id/bt_animatorSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="联合动画的代码实现" />
+
+
 </LinearLayout>

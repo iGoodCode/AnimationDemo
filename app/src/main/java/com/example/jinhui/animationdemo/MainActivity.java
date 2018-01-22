@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.jinhui.animationdemo.animatorset.AnimatorSetActivity;
 import com.example.jinhui.animationdemo.propertyvaluesholder.OfPropertyValuesHolderActivity;
 import com.example.jinhui.animationdemo.animation.AnimationActivity;
 import com.example.jinhui.animationdemo.baseanim.BaseAnimActivity;
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick({R.id.bt_base, R.id.bt_interpolator, R.id.bt_xml, R.id.bt_valueAnimator,
-            R.id.bt_ofPropertyValuesHolder})
+            R.id.bt_ofPropertyValuesHolder, R.id.bt_animatorSet})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_base:
@@ -58,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bt_ofPropertyValuesHolder:
                 startActivity(new Intent(this, OfPropertyValuesHolderActivity.class));
+                break;
+            case R.id.bt_animatorSet:
+                startActivity(new Intent(this, AnimatorSetActivity.class));
                 break;
 
         }
