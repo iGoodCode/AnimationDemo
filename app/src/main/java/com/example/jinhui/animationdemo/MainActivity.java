@@ -11,7 +11,9 @@ import com.example.jinhui.animationdemo.animation.AnimationActivity;
 import com.example.jinhui.animationdemo.animatorset.AnimatorSetActivity;
 import com.example.jinhui.animationdemo.baseanim.BaseAnimActivity;
 import com.example.jinhui.animationdemo.interpolator.InterpolatorActivity;
+import com.example.jinhui.animationdemo.layoutgridlayoutanimation.AnimateLayoutChangesLayoutTransitionActivity;
 import com.example.jinhui.animationdemo.layoutgridlayoutanimation.LayoutGridLayoutAnimationActivity;
+import com.example.jinhui.animationdemo.layoutgridlayoutanimation.ListViewItemActivity;
 import com.example.jinhui.animationdemo.propertyanimator.PropertyAnimatorActivity;
 import com.example.jinhui.animationdemo.propertyvaluesholder.OfPropertyValuesHolderActivity;
 import com.example.jinhui.animationdemo.xml.xml_Value_ObjectAnimator_AnimatorSet;
@@ -43,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     Button btXmlValueObjectAnimatorAnimatorSet;
     @BindView(R.id.bt_layout_gridLayoutAnimation)
     Button btLayoutGridLayoutAnimation;
+    @BindView(R.id.bt_animateLayoutChanges_LayoutTransition)
+    Button btAnimateLayoutChangesLayoutTransition;
+    @BindView(R.id.bt_listView_Item)
+    Button btListViewItem;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick({R.id.bt_base, R.id.bt_interpolator, R.id.bt_xml, R.id.bt_valueAnimator,
-            R.id.bt_ofPropertyValuesHolder, R.id.bt_animatorSet, R.id.bt_xml_Value_ObjectAnimator_AnimatorSet, R.id.bt_layout_gridLayoutAnimation})
+            R.id.bt_ofPropertyValuesHolder, R.id.bt_animatorSet, R.id.bt_xml_Value_ObjectAnimator_AnimatorSet,
+            R.id.bt_layout_gridLayoutAnimation, R.id.bt_animateLayoutChanges_LayoutTransition, R.id.bt_listView_Item})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_base:
@@ -78,6 +85,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bt_layout_gridLayoutAnimation:
                 startActivity(new Intent(this, LayoutGridLayoutAnimationActivity.class));
+                break;
+            case R.id.bt_animateLayoutChanges_LayoutTransition:
+                startActivity(new Intent(this, AnimateLayoutChangesLayoutTransitionActivity.class));
+                break;
+            case R.id.bt_listView_Item:
+                startActivity(new Intent(this, ListViewItemActivity.class));
                 break;
         }
     }

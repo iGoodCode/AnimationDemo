@@ -30,6 +30,8 @@
         <activity android:name=".layoutgridlayoutanimation.LayoutAnimationJavaActivity"/>
         <activity android:name=".layoutgridlayoutanimation.GridAnimationActivity"/>
         <activity android:name=".layoutgridlayoutanimation.GridAnimationJavaActivity"/>
+        <activity android:name=".layoutgridlayoutanimation.AnimateLayoutChangesLayoutTransitionActivity"/>
+        <activity android:name=".layoutgridlayoutanimation.ListViewItemActivity"/>
 
     </application>
 

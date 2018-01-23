@@ -48,5 +48,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="layoutAnimation与gridLayoutAnimation" />
+    <Button
+        android:id="@+id/bt_animateLayoutChanges_LayoutTransition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="animateLayoutChanges与LayoutTransition" />
+    <Button
+        android:id="@+id/bt_listView_Item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="实现ListView Item进入动画" />
+
+
 
 </LinearLayout>
