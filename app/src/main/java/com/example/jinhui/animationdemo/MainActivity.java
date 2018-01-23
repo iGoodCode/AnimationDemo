@@ -7,12 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.jinhui.animationdemo.animatorset.AnimatorSetActivity;
-import com.example.jinhui.animationdemo.propertyvaluesholder.OfPropertyValuesHolderActivity;
 import com.example.jinhui.animationdemo.animation.AnimationActivity;
+import com.example.jinhui.animationdemo.animatorset.AnimatorSetActivity;
 import com.example.jinhui.animationdemo.baseanim.BaseAnimActivity;
 import com.example.jinhui.animationdemo.interpolator.InterpolatorActivity;
+import com.example.jinhui.animationdemo.layoutgridlayoutanimation.LayoutGridLayoutAnimationActivity;
 import com.example.jinhui.animationdemo.propertyanimator.PropertyAnimatorActivity;
+import com.example.jinhui.animationdemo.propertyvaluesholder.OfPropertyValuesHolderActivity;
 import com.example.jinhui.animationdemo.xml.xml_Value_ObjectAnimator_AnimatorSet;
 
 import butterknife.BindView;
@@ -34,6 +35,14 @@ public class MainActivity extends AppCompatActivity {
     Button btXml;
     @BindView(R.id.bt_valueAnimator)
     Button btValueAnimator;
+    @BindView(R.id.bt_ofPropertyValuesHolder)
+    Button btOfPropertyValuesHolder;
+    @BindView(R.id.bt_animatorSet)
+    Button btAnimatorSet;
+    @BindView(R.id.bt_xml_Value_ObjectAnimator_AnimatorSet)
+    Button btXmlValueObjectAnimatorAnimatorSet;
+    @BindView(R.id.bt_layout_gridLayoutAnimation)
+    Button btLayoutGridLayoutAnimation;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick({R.id.bt_base, R.id.bt_interpolator, R.id.bt_xml, R.id.bt_valueAnimator,
-            R.id.bt_ofPropertyValuesHolder, R.id.bt_animatorSet, R.id.bt_xml_Value_ObjectAnimator_AnimatorSet})
+            R.id.bt_ofPropertyValuesHolder, R.id.bt_animatorSet, R.id.bt_xml_Value_ObjectAnimator_AnimatorSet, R.id.bt_layout_gridLayoutAnimation})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_base:
@@ -67,9 +76,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.bt_xml_Value_ObjectAnimator_AnimatorSet:
                 startActivity(new Intent(this, xml_Value_ObjectAnimator_AnimatorSet.class));
                 break;
-
+            case R.id.bt_layout_gridLayoutAnimation:
+                startActivity(new Intent(this, LayoutGridLayoutAnimationActivity.class));
+                break;
         }
     }
-
 
 }

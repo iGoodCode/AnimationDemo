@@ -43,5 +43,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="联合动画的XML实现与使用示例" />
+    <Button
+        android:id="@+id/bt_layout_gridLayoutAnimation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="layoutAnimation与gridLayoutAnimation" />
 
 </LinearLayout>

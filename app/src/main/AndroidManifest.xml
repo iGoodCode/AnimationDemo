@@ -25,6 +25,11 @@
         <activity android:name=".propertyvaluesholder.OfPropertyValuesHolderActivity"/>
         <activity android:name=".animatorset.AnimatorSetActivity"/>
         <activity android:name=".xml.xml_Value_ObjectAnimator_AnimatorSet"/>
+        <activity android:name=".layoutgridlayoutanimation.LayoutGridLayoutAnimationActivity"/>
+        <activity android:name=".layoutgridlayoutanimation.LayoutAnimationActivity"/>
+        <activity android:name=".layoutgridlayoutanimation.LayoutAnimationJavaActivity"/>
+        <activity android:name=".layoutgridlayoutanimation.GridAnimationActivity"/>
+        <activity android:name=".layoutgridlayoutanimation.GridAnimationJavaActivity"/>
 
     </application>
 
