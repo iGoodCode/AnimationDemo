@@ -38,6 +38,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="联合动画的代码实现" />
-
+    <Button
+        android:id="@+id/bt_xml_Value_ObjectAnimator_AnimatorSet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="联合动画的XML实现与使用示例" />
 
 </LinearLayout>

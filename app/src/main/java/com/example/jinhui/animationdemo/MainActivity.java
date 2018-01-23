@@ -13,6 +13,7 @@ import com.example.jinhui.animationdemo.animation.AnimationActivity;
 import com.example.jinhui.animationdemo.baseanim.BaseAnimActivity;
 import com.example.jinhui.animationdemo.interpolator.InterpolatorActivity;
 import com.example.jinhui.animationdemo.propertyanimator.PropertyAnimatorActivity;
+import com.example.jinhui.animationdemo.xml.xml_Value_ObjectAnimator_AnimatorSet;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick({R.id.bt_base, R.id.bt_interpolator, R.id.bt_xml, R.id.bt_valueAnimator,
-            R.id.bt_ofPropertyValuesHolder, R.id.bt_animatorSet})
+            R.id.bt_ofPropertyValuesHolder, R.id.bt_animatorSet, R.id.bt_xml_Value_ObjectAnimator_AnimatorSet})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_base:
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.bt_animatorSet:
                 startActivity(new Intent(this, AnimatorSetActivity.class));
+                break;
+            case R.id.bt_xml_Value_ObjectAnimator_AnimatorSet:
+                startActivity(new Intent(this, xml_Value_ObjectAnimator_AnimatorSet.class));
                 break;
 
         }
