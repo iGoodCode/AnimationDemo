@@ -99,6 +99,10 @@ public class AnimateLayoutChangesLayoutTransitionActivity extends AppCompatActiv
     private int i = 0;
     private LayoutTransition mTransitioner;
 
+    /**
+     * 不能点太快,不然会报openGL内存溢出错误，我发现的是按钮变形，不可恢复的
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,6 +149,7 @@ public class AnimateLayoutChangesLayoutTransitionActivity extends AppCompatActiv
          比如：
          *
          */
+
         mTransitioner = new LayoutTransition();
         //入场动画:view在这个容器中消失时触发的动画
         ObjectAnimator animIn = ObjectAnimator.ofFloat(null, "rotationY", 0f, 360f,0f);
@@ -168,8 +173,45 @@ public class AnimateLayoutChangesLayoutTransitionActivity extends AppCompatActiv
 
 
         /**
-         * LayoutTransition.CHANGE_DISAPPEARING动画 ,
+         * LayoutTransition.CHANGE_DISAPPEARING动画
          */
+        PropertyValuesHolder outLeft = PropertyValuesHolder.ofInt("left",0,0);
+        PropertyValuesHolder outTop = PropertyValuesHolder.ofInt("top",0,0);
+
+        Keyframe frame0 = Keyframe.ofFloat(0f, 0);
+        Keyframe frame1 = Keyframe.ofFloat(0.1f, -20f);
+        Keyframe frame2 = Keyframe.ofFloat(0.2f, 20f);
+        Keyframe frame3 = Keyframe.ofFloat(0.3f, -20f);
+        Keyframe frame4 = Keyframe.ofFloat(0.4f, 20f);
+        Keyframe frame5 = Keyframe.ofFloat(0.5f, -20f);
+        Keyframe frame6 = Keyframe.ofFloat(0.6f, 20f);
+        Keyframe frame7 = Keyframe.ofFloat(0.7f, -20f);
+        Keyframe frame8 = Keyframe.ofFloat(0.8f, 20f);
+        Keyframe frame9 = Keyframe.ofFloat(0.9f, -20f);
+        Keyframe frame10 = Keyframe.ofFloat(1, 0);
+        PropertyValuesHolder mPropertyValuesHolder = PropertyValuesHolder.ofKeyframe("rotation",frame0,frame1,frame2,frame3,frame4,frame5,frame6,frame7,frame8,frame9,frame10);
+
+        ObjectAnimator mObjectAnimatorChangeDisAppearing = ObjectAnimator.ofPropertyValuesHolder(this, outLeft,outTop,mPropertyValuesHolder);
+        mTransitioner.setAnimator(LayoutTransition.CHANGE_DISAPPEARING, mObjectAnimatorChangeDisAppearing);
+
+        //设置单个item间的动画间隔
+        mTransitioner.setStagger(LayoutTransition.CHANGE_APPEARING, 30);
+
+
+        mTransitioner.addTransitionListener(new LayoutTransition.TransitionListener() {
+            @Override
+            public void startTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
+
+                Log.d("qijian","start:"+"transitionType:"+transitionType +"count:"+container.getChildCount() + "view:"+view.getClass().getName());
+            }
+
+            @Override
+            public void endTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType) {
+                Log.d("qijian","end:"+"transitionType:"+transitionType +"count:"+container.getChildCount() + "view:"+view.getClass().getName());
+            }
+        });
+
+        layoutTransitionGroup.setLayoutTransition(mTransitioner);
 
     }
 
