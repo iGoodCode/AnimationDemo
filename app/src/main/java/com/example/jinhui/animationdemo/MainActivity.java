@@ -13,7 +13,7 @@ import com.example.jinhui.animationdemo.baseanim.BaseAnimActivity;
 import com.example.jinhui.animationdemo.interpolator.InterpolatorActivity;
 import com.example.jinhui.animationdemo.layoutgridlayoutanimation.AnimateLayoutChangesLayoutTransitionActivity;
 import com.example.jinhui.animationdemo.layoutgridlayoutanimation.LayoutGridLayoutAnimationActivity;
-import com.example.jinhui.animationdemo.layoutgridlayoutanimation.ListViewItemActivity;
+import com.example.jinhui.animationdemo.layoutgridlayoutanimation.listviewitem.ListViewItemActivity;
 import com.example.jinhui.animationdemo.propertyanimator.PropertyAnimatorActivity;
 import com.example.jinhui.animationdemo.propertyvaluesholder.OfPropertyValuesHolderActivity;
 import com.example.jinhui.animationdemo.xml.xml_Value_ObjectAnimator_AnimatorSet;
