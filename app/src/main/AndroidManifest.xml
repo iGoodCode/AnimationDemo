@@ -39,6 +39,8 @@
         <activity android:name=".step2.canvasbase.line.LineActivity"/>
         <activity android:name=".step2.view.CanvasActivity"/>
         <activity android:name=".step2.pathtext.PathTextActivity"/>
+        <activity android:name=".step2.range.RangeActivity"/>
+        <activity android:name=".step2.range.CanvasRangeActivity"/>
 
     </application>
 
