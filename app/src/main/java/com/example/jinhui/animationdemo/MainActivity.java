@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.example.jinhui.animationdemo.step1.Step1Activity;
 import com.example.jinhui.animationdemo.step2.Step2Activity;
+import com.example.jinhui.animationdemo.step3.Step3Activity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,10 +23,12 @@ import butterknife.OnClick;
 public class MainActivity extends AppCompatActivity {
 
 
-    @BindView(R.id.button1)
-    Button button1;
-    @BindView(R.id.button2)
-    Button button2;
+    @BindView(R.id.bt_step1)
+    Button btStep1;
+    @BindView(R.id.bt_step2)
+    Button btStep2;
+    @BindView(R.id.bt_step3)
+    Button btStep3;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,14 +39,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.button1, R.id.button2})
+    @OnClick({R.id.bt_step1, R.id.bt_step2, R.id.bt_step3})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.button1:
+            case R.id.bt_step1:
                 startActivity(new Intent(this, Step1Activity.class));
                 break;
-            case R.id.button2:
+            case R.id.bt_step2:
                 startActivity(new Intent(this, Step2Activity.class));
+                break;
+            case R.id.bt_step3:
+                startActivity(new Intent(this, Step3Activity.class));
                 break;
         }
     }

@@ -34,7 +34,10 @@
         <activity android:name=".step1.layoutgridlayoutanimation.listviewitem.ListViewItemActivity"/>
         <activity android:name=".step2.Step2Activity"/>
         <activity android:name=".step1.Step1Activity"/>
+        <activity android:name=".step3.Step3Activity"/>
         <activity android:name=".step2.canvasbase.CanvasBaseActivity"/>
+        <activity android:name=".step2.canvasbase.line.LineActivity"/>
+        <activity android:name=".step2.canvasbase.CanvasActivity"/>
 
     </application>
 

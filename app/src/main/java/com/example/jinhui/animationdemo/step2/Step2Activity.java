@@ -41,7 +41,7 @@ public class Step2Activity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_canvas);
+        setContentView(R.layout.activity_step2);
         ButterKnife.bind(this);
     }
 
