@@ -1,4 +1,4 @@
-package com.example.jinhui.animationdemo.step2.canvasbase;
+package com.example.jinhui.animationdemo.step2.view;
 
 import android.content.Intent;
 import android.os.Bundle;

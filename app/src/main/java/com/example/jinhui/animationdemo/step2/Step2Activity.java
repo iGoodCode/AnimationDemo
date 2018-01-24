@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.example.jinhui.animationdemo.R;
 import com.example.jinhui.animationdemo.step2.canvasbase.CanvasBaseActivity;
+import com.example.jinhui.animationdemo.step2.pathtext.PathTextActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +53,7 @@ public class Step2Activity extends AppCompatActivity {
                 startActivity(new Intent(this, CanvasBaseActivity.class));
                 break;
             case R.id.bt_path_text:
+                startActivity(new Intent(this, PathTextActivity.class));
                 break;
             case R.id.bt_range:
                 break;
