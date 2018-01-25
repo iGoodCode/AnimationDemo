@@ -138,8 +138,348 @@ public class MyView extends View {
             case More_save:
                 doMore_save(canvas);
                 break;
+            case DrawText:
+                doDrawText(canvas);
+                break;
+            case SetTextAlign:
+                doSetTextAlign(canvas);
+                break;
+            case Adtb:
+                doAdtb(canvas);
+                break;
+            case What:
+                doWhat(canvas);
+                break;
+            case Write_left:
+                doWrite_left(canvas);
+                break;
+            case Write_center:
+                doWrite_center(canvas);
+                break;
         }
 
+    }
+
+    /**
+     * 在这个图中，我们给定左上角的位置，即(left,top)；我们知道要画文字，drawText（）中传进去的Y坐标是基线的位置，所以我们就必须根据top的位置计算出baseline的位置。
+     我们来看一个公式：
+     FontMetrics.top = top - baseline;
+     所以baseline = top - FontMetrics.top;
+     因为FontMetrics.top是可以得到的，又因为我们的top坐标是给定的，所以通过这个公式就能得到baseline的位置了。
+     下面举个例子来说明一下根据矩形左上项点绘制文字的过程：
+     * @param canvas
+     */
+    private void doWrite_left(Canvas canvas) {
+        String text = "harvic\'s blog";
+        int top = 200;
+        int baseLineX = 0 ;
+
+        //设置paint
+        Paint paint = new Paint();
+        paint.setTextSize(120); //以px为单位
+        paint.setTextAlign(Paint.Align.LEFT);
+
+        //画top线
+        paint.setColor(Color.YELLOW);
+        canvas.drawLine(baseLineX, top, 3000, top, paint);
+
+        //计算出baseLine位置
+        Paint.FontMetricsInt fm = paint.getFontMetricsInt();
+        int baseLineY = top - fm.top;
+
+        //画基线
+        paint.setColor(Color.RED);
+        canvas.drawLine(baseLineX, baseLineY, 3000, baseLineY, paint);
+
+        //写文字
+        paint.setColor(Color.GREEN);
+        canvas.drawText(text, baseLineX, baseLineY, paint);
+    }
+
+    /**
+     * 给定中间线位置绘图
+     * 在这个图中，总共有四条线：top线，bottom线，baseline和center线；
+     图中center线正是在top线和bottom线的正中间。
+     为了方便推导公式，我另外标了三个距离A,B,C;
+     很显然，距离A和距离C是相等的，都等于文字所在矩形高度以的一半，即：
+     A = C = (bottom - top)/2;
+     又因为bottom = baseline + FontMetrics.bottom;
+     top = baseline+FontMetrics.top;
+     所以，将它们两个代入上面的公式，就可得到：
+     A = C = (FontMetrics.bottom - FontMetrics.top)/2;
+     而距离B,则表示Center线到baseline的距离。
+     很显然距离B = C - (bottom - baseline);
+     又因为
+     FontMetrics.bottom = bottom-baseline;
+     C = A;
+     所以，B = A - FontMetrics.bottom;
+     所以baseline = center + B = center + A - FontMetrics.bottom = center + (FontMetrics.bottom - FontMetrics.top)/2 - FontMetrics.bottom;
+
+     根据上面的推导过程，我们最终可知，当给定中间线center位置以后，baseline的位置为：
+
+     baseline = center + (FontMetrics.bottom - FontMetrics.top)/2 - FontMetrics.bottom;
+     下面我们举个例子来说明下这个公式的用法。
+     * @param canvas
+     */
+    private void doWrite_center(Canvas canvas) {
+        String text = "harvic\'s blog";
+        int center = 200;
+        int baseLineX = 0 ;
+
+        //设置paint
+        Paint paint = new Paint();
+        paint.setTextSize(120); //以px为单位
+        paint.setTextAlign(Paint.Align.LEFT);
+
+        //画center线
+        paint.setColor(Color.YELLOW);
+        canvas.drawLine(baseLineX, center, 3000, center, paint);
+
+        //计算出baseLine位置
+        Paint.FontMetricsInt fm = paint.getFontMetricsInt();
+        int baseLineY = center + (fm.bottom - fm.top)/2 - fm.bottom;
+
+        //画基线
+        paint.setColor(Color.RED);
+        canvas.drawLine(baseLineX, baseLineY, 3000, baseLineY, paint);
+
+        //写文字
+        paint.setColor(Color.GREEN);
+        canvas.drawText(text, baseLineX, baseLineY, paint);
+    }
+
+    /**
+     * 这部分，我们将讲解如何获取所绘制字符串所占区域的高度、宽度和仅包裹字符串的最小矩形。我们来看张图来讲述下他们的意义：
+     * 在这张图中，文字底部的绿色框就是所绘制字符串所占据的大小。我们要求的宽度和高度也就是这个绿色框的宽度和高度。
+     从图中也可以看到，红色框部分，它的宽和高紧紧包围着字符串，所以红色框就是我们要求的最小矩形。即能包裹字符串的最小矩形。
+
+     1、字符串所占高度和宽度
+     （1）、高度
+     字符串所占高度很容易得到，直接用bottom线所在位置的Y坐标减去top线所在位置的Y坐标就是字符串所占的高度：
+     Paint.FontMetricsInt fm = paint.getFontMetricsInt();
+     int top = baseLineY + fm.top;
+     int bottom = baseLineY + fm.bottom;
+     //所占高度
+     int height = bottom - top;
+
+     （2）、宽度
+     宽度是非常容易得到的，直接利用下面的函数就可以得到
+     int width = paint.measureText(String text);
+
+     使用示例如下：
+     Paint paint = new Paint();
+     //设置paint
+     paint.setTextSize(120); //以px为单位
+     //获取宽度
+     int width = (int)paint.measureText("harvic\'s blog");
+     （3）、最小矩形
+     要获取最小矩形，也是通过系统函数来获取的，函数及意义如下：
+     [java] view plain copy
+
+     /**
+     * 获取指定字符串所对应的最小矩形，以（0，0）点所在位置为基线
+     *  text  要测量最小矩形的字符串
+     *  start 要测量起始字符在字符串中的索引
+     *  end   所要测量的字符的长度
+     *  bounds 接收测量结果
+     * public void getTextBounds(String text, int start, int end, Rect bounds);
+     *
+     * 我们简单展示下使用代码及结果：
+
+    String text = "harvic\'s blog";
+    Paint paint = new Paint();
+    //设置paint
+    paint.setTextSize(120); //以px为单位
+
+    Rect minRect = new Rect();
+    paint.getTextBounds(text,0,text.length(),minRect);
+    Log.e("qijian",minRect.toShortString());
+     *
+     */
+    private void doWhat(Canvas canvas) {
+        String text = "harvic\'s blog";
+        int baseLineY = 200;
+        int baseLineX = 0 ;
+
+//设置paint
+        Paint paint = new Paint();
+        paint.setTextSize(120); //以px为单位
+        paint.setTextAlign(Paint.Align.LEFT);
+
+//画text所占的区域
+        Paint.FontMetricsInt fm = paint.getFontMetricsInt();
+        int top = baseLineY + fm.top;
+        int bottom = baseLineY + fm.bottom;
+        int width = (int)paint.measureText(text);
+        Rect rect = new Rect(baseLineX,top,baseLineX+width,bottom);
+
+        paint.setColor(Color.GREEN);
+        canvas.drawRect(rect,paint);
+
+//画最小矩形
+        Rect minRect = new Rect();
+        paint.getTextBounds(text,0,text.length(),minRect);
+        minRect.top = baseLineY + minRect.top;
+        minRect.bottom = baseLineY + minRect.bottom;
+        paint.setColor(Color.RED);
+        canvas.drawRect(minRect,paint);
+
+//写文字
+        paint.setColor(Color.BLACK);
+        canvas.drawText(text, baseLineX, baseLineY, paint);
+    }
+
+    /**
+     * Text的绘图四线格
+     * 除了基线以外，如上图所示，另外还有四条线，分别是ascent,descent,top,bottom，他们的意义分别是：
+
+     ascent: 系统建议的，绘制单个字符时，字符应当的最高高度所在线
+     descent:系统建议的，绘制单个字符时，字符应当的最低高度所在线
+     top: 可绘制的最高高度所在线
+     bottom: 可绘制的最低高度所在线
+
+     单从这几个定义，大家可能还是搞不清这几值到底是什么意义。我们来看一下电视的显示。用过视频处理工具的同学（比如premiere,AE,绘声绘影等）,应该都会知道，在制作视频时，视频显示位置都会有一个安全区域框，如下图所示：
+
+     FontMetrics
+     Android给我们提供了一个类：FontMetrics，它里面有四个成员变量：
+     FontMetrics::ascent;
+     FontMetrics::descent;
+     FontMetrics::top;
+     FontMetrics::bottom;
+     他们的意义与值的计算方法分别如下：
+     ascent = ascent线的y坐标 - baseline线的y坐标；
+     descent = descent线的y坐标 - baseline线的y坐标；
+     top = top线的y坐标 - baseline线的y坐标；
+     bottom = bottom线的y坐标 - baseline线的y坐标；
+
+
+     * @param canvas
+     */
+    private void doAdtb(Canvas canvas) {
+        int baseLineY = 200;
+        int baseLineX = 0 ;
+
+        Paint paint = new Paint();
+        //写文字
+        paint.setColor(Color.GREEN);
+        paint.setTextSize(120); //以px为单位
+        paint.setTextAlign(Paint.Align.LEFT);
+        canvas.drawText("harvic\'s blog", baseLineX, baseLineY, paint);
+
+        //计算各线在位置
+        Paint.FontMetrics fm = paint.getFontMetrics();
+        float ascent = baseLineY + fm.ascent;
+        float descent = baseLineY + fm.descent;
+        float top = baseLineY + fm.top;
+        float bottom = baseLineY + fm.bottom;
+
+        //画基线
+        paint.setColor(Color.RED);
+        canvas.drawLine(baseLineX, baseLineY, 3000, baseLineY, paint);
+
+        //画top
+        paint.setColor(Color.BLUE);
+        canvas.drawLine(baseLineX, top, 3000, top, paint);
+
+        //画ascent
+        paint.setColor(Color.GREEN);
+        canvas.drawLine(baseLineX, ascent, 3000, ascent, paint);
+
+        //画descent
+        paint.setColor(Color.YELLOW);
+        canvas.drawLine(baseLineX, descent, 3000, descent, paint);
+
+        //画bottom
+        paint.setColor(Color.RED);
+        canvas.drawLine(baseLineX, bottom, 3000, bottom, paint);
+    }
+
+    /**
+     * 3、paint.setTextAlign(Paint.Align.XXX);
+     在上面我们讲了，drawText()函数中的Y坐标表示所要绘制文字的基线所在位置。从上面的例子，我们可以看到，我们绘图结果是在X坐标的右边开始绘制的，但这并不是必然的结果。
+     我们来看一张图：
+     我们知道，我们在drawText(text, x, y, paint)中传进去的源点坐标(x,y);其中，y表示的基线的位置。那x代表什么呢？从上面的例子运行结果来看，应当是文字开始绘制的地方。
+     并不是！x代表所要绘制文字所在矩形的相对位置。相对位置就是指指定点（x,y）在在所要绘制矩形的位置。我们知道所绘制矩形的纵坐标是由Y值来确定的，而相对x坐标的位置，只有左、中、右三个位置了。也就是所绘制矩形可能是在x坐标的左侧绘制，也有可能在x坐标的中间，也有可能在x坐标的右侧。而定义在x坐标在所绘制矩形相对位置的函数是：
+     /**
+     * 其中Align的取值为：Panit.Align.LEFT,Paint.Align.CENTER,Paint.Align.RIGHT
+     *Paint::setTextAlign(Align align);
+     *
+     * 在原来代码上加上paint.setTextAlign(Paint.Align.LEFT)
+     *
+     * 相对位置是根据所要绘制文字所在矩形来计算的。!!!
+     * @param canvas
+     */
+    private void doSetTextAlign(Canvas canvas) {
+        int baseLineY = 200;
+        int baseLineX = 0 ;
+
+        //画基线
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        canvas.drawLine(baseLineX, baseLineY, 600, baseLineY, paint);
+
+        //写文字
+        paint.setColor(Color.GREEN);
+        paint.setTextSize(120); //以px为单位
+        // 可见，原点(x,y)在矩形的左侧，即矩形从(x,y)的点开始绘制
+//        paint.setTextAlign(Paint.Align.LEFT);
+        /**
+         * 所以原点（x,y）就在所要绘制文字所在矩形区域的正中间，
+         * 换句话说，系统会根据(x,y)的位置和文字所在矩形大小，会计算出当前开始绘制的点。以使原点(x,y)正好在所要绘制的矩形的正中间。
+         */
+//        paint.setTextAlign(Paint.Align.CENTER);
+        // 所以原点（x,y）应当在所要绘制矩形的右侧，在上面的代码中，也就是说正个矩形都在（0,200）的左侧，所以我们看到的是什么都没有。
+        paint.setTextAlign(Paint.Align.RIGHT);
+        canvas.drawText("harvic\'s blog", baseLineX, baseLineY, paint);
+    }
+
+    /**
+     * 一、概述
+
+     1、四线格与基线
+     小时候，我们在刚开始学习写字母时，用的本子是四线格的，我们必须把字母按照规则写在四线格内。
+     比如：
+     那么问题来了，在canvas在利用drawText绘制文字时，也是有规则的，这个规则就是基线！
+     我们先来看一下什么是基线：
+     可见基线就是四线格中的第三条线！
+     也就是说，只要基线的位置定了，那文字的位置必然是定了的！
+
+     2、canvas.drawText()
+     （1）、canvas.drawText()与基线
+     下面我们来重新看看canvas.drawText（）这个函数，有关drawText的所有drawText()函数的基本用法，在文章《android Graphics（二）：路径及文字》中已经讲过，这里就不再一一讲解，只拿出一个来讲解下drawText与基线的关系：
+
+     /**
+     * text:要绘制的文字
+     * x：绘制原点x坐标
+     * y：绘制原点y坐标
+     * paint:用来做画的画笔
+     *public void drawText(String text, float x, float y, Paint paint)
+     * 上面这个构造函数是最常用的drawText方法，传进去一个String对象就能画出对应的文字。
+     但这里有两个参数需要非常注意，表示原点坐标的x和y.很多同学可能会认为，这里传进去的原点参数(x,y)是所在绘制文字所在矩形的左上角的点。但实际上并不是！比如，我们上面如果要画"harvic's blog"这几个字，这个原点坐标应当是下图中绿色小点的位置
+     在(x,y)中最让人捉急的是y坐标，一般而言，(x，y)所代表的位置是所画图形对应的矩形的左上角点。但在drawText中是非常例外的，y所代表的是基线的位置！
+
+     * @param canvas
+     */
+    /**
+     * 结论：
+     *
+     * 1、drawText是中的参数y是基线的位置。
+     * 2、一定要清楚的是，只要x坐标、基线位置、文字大小确定以后，文字的位置就是确定的了。
+     *
+     */
+    private void doDrawText(Canvas canvas) {
+        int baseLineX = 0 ;
+        int baseLineY = 200;
+
+        //画基线
+        Paint paint = new Paint();
+        paint.setColor(Color.RED);
+        canvas.drawLine(baseLineX, baseLineY, 3000, baseLineY, paint);
+
+        //写文字
+        paint.setColor(Color.GREEN);
+        paint.setTextSize(120); //以px为单位
+        canvas.drawText("harvic\'s blog", baseLineX, baseLineY, paint);
     }
 
     /**
@@ -1118,7 +1458,10 @@ public class MyView extends View {
         Translate(23), Screen(24), 
         Rotate(25), Scale(26), 
         Skew(27), Clip(28), 
-        Save_restore(29), More_save(30);
+        Save_restore(29), More_save(30), 
+        DrawText(31), SetTextAlign(32), 
+        Adtb(33), What(34),
+        Write_left(35), Write_center(36);
 
         private int value = 0;
 
@@ -1198,6 +1541,18 @@ public class MyView extends View {
                     return Save_restore;
                 case 30:
                     return More_save;
+                case 31:
+                    return DrawText;
+                case 32:
+                    return SetTextAlign;
+                case 33:
+                    return Adtb;
+                case 34:
+                    return What;
+                case 35:
+                    return Write_left;
+                case 36:
+                    return Write_center;
             }
             return null;
         }
