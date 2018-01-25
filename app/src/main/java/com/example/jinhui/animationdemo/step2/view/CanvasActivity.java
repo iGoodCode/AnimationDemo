@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.jinhui.animationdemo.R;
+import com.example.jinhui.animationdemo.step2.MyView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

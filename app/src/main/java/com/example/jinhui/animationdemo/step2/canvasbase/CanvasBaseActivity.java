@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import com.example.jinhui.animationdemo.R;
 import com.example.jinhui.animationdemo.step2.view.CanvasActivity;
-import com.example.jinhui.animationdemo.step2.view.MyView;
+import com.example.jinhui.animationdemo.step2.MyView;
 import com.example.jinhui.animationdemo.step2.canvasbase.line.LineActivity;
 
 import butterknife.BindView;

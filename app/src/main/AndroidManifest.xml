@@ -41,6 +41,7 @@
         <activity android:name=".step2.pathtext.PathTextActivity"/>
         <activity android:name=".step2.range.RangeActivity"/>
         <activity android:name=".step2.range.CanvasRangeActivity"/>
+        <activity android:name=".step2.canvastransform.CanvasTransformActivity"/>
 
     </application>
 

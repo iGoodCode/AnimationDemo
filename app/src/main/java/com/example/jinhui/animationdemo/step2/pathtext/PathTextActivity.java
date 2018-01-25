@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.jinhui.animationdemo.R;
 import com.example.jinhui.animationdemo.step2.view.CanvasActivity;
-import com.example.jinhui.animationdemo.step2.view.MyView;
+import com.example.jinhui.animationdemo.step2.MyView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

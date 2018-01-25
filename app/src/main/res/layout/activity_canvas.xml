@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.example.jinhui.animationdemo.step2.view.MyView
+    <com.example.jinhui.animationdemo.step2.MyView
         android:id="@+id/myView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
