@@ -156,8 +156,138 @@ public class MyView extends View {
             case Write_center:
                 doWrite_center(canvas);
                 break;
+            case Sin:
+                doSin(canvas);
+                break;
+            case Gestures1:
+                doGestures1(canvas);
+                break;
+            case WaveView:
+                doWaveView(canvas);
+                break;
+            case rQuadTo:
+                dorQuadTo(canvas);
+                break;
         }
 
+    }
+
+    /**
+     * 四、Path.rQuadTo()
+     1、概述
+
+     该函数声明如下
+     public void rQuadTo(float dx1, float dy1, float dx2, float dy2)
+     其中：
+
+     dx1:控制点X坐标，表示相对上一个终点X坐标的位移坐标，可为负值，正值表示相加，负值表示相减；
+     dy1:控制点Y坐标，相对上一个终点Y坐标的位移坐标。同样可为负值，正值表示相加，负值表示相减；
+     dx2:终点X坐标，同样是一个相对坐标，相对上一个终点X坐标的位移值，可为负值，正值表示相加，负值表示相减；
+     dy2:终点Y坐标，同样是一个相对，相对上一个终点Y坐标的位移值。可为负值，正值表示相加，负值表示相减；
+
+     这四个参数都是传递的都是相对值，相对上一个终点的位移值。
+     比如，我们上一个终点坐标是(300,400)那么利用rQuadTo(100,-100,200,100)；
+     得到的控制点坐标是（300+100,400-100）即(500,300)
+     同样，得到的终点坐标是(300+200,400+100)即(500,500)
+
+
+     所以下面这两段代码是等价的：
+     利用quadTo定义绝对坐标
+     path.moveTo(300,400);
+     path.quadTo(500,300,500,500);
+
+     与利用rQuadTo定义相对坐标
+     path.moveTo(300,400);
+     path.rQuadTo(100,-100,200,100)
+
+
+     第一句：path.rQuadTo(100,-100,200,0);是建立在（100,300）这个点基础上来计算相对坐标的。
+     所以
+     控制点X坐标=上一个终点X坐标+控制点X位移 = 100+100=200；
+     控制点Y坐标=上一个终点Y坐标+控制点Y位移 = 300-100=200；
+     终点X坐标 = 上一个终点X坐标+终点X位移 = 100+200=300；
+     终点Y坐标 = 上一个终点Y坐标+控制点Y位移 = 300+0=300;
+     所以这句与path.quadTo(200,200,300,300);对等的
+     第二句：path.rQuadTo(100,100,200,0);是建立在它的前一个终点即(300,300)的基础上来计算相对坐标的！
+     所以
+     控制点X坐标=上一个终点X坐标+控制点X位移 = 300+100=200；
+     控制点Y坐标=上一个终点Y坐标+控制点Y位移 = 300+100=200；
+     终点X坐标 = 上一个终点X坐标+终点X位移 = 300+200=500；
+     终点Y坐标 = 上一个终点Y坐标+控制点Y位移 = 300+0=300;
+     所以这句与path.quadTo(400,400,500,300);对等的
+     最终效果也是一样的。
+     通过这个例子，只想让大家明白一点：rQuadTo(float dx1, float dy1, float dx2, float dy2)中的位移坐标，都是以上一个终点位置为基准来做偏移的！
+
+     * @param canvas
+     */
+    private void dorQuadTo(Canvas canvas) {
+        // 上篇中onDraw的代码：
+//        Paint paint = new Paint();
+//        paint.setStyle(Paint.Style.STROKE);
+//        paint.setColor(Color.GREEN);
+//
+//        Path path = new Path();
+//        path.moveTo(100,300);
+//        path.quadTo(200,200,300,300);
+//        path.quadTo(400,400,500,300);
+//
+//        canvas.drawPath(path,paint);
+
+        // 将它转化为rQuadTo来重新实现下：
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        paint.setColor(Color.GREEN);
+
+        Path path = new Path();
+        path.moveTo(100,300);
+        path.rQuadTo(100,-100,200,0);
+        path.rQuadTo(100,100,200,0);
+        canvas.drawPath(path,paint);
+    }
+
+    private void doWaveView(Canvas canvas) {
+
+    }
+
+    private void doGestures1(Canvas canvas) {
+    }
+
+    /**
+     * 1、quadTo使用原理
+     * 这部分我们先来看看quadTo函数的用法，其定义如下：
+
+     public void quadTo(float x1, float y1, float x2, float y2)
+
+     参数中(x1,y1)是控制点坐标，(x2,y2)是终点坐标
+     大家可能会有一个疑问：有控制点和终点坐标，那起始点是多少呢？
+     整条线的起始点是通过Path.moveTo(x,y)来指定的，而如果我们连续调用quadTo()，前一个quadTo()的终点，就是下一个quadTo()函数的起点；如果初始没有调用Path.moveTo(x,y)来指定起始点，则默认以控件左上角(0,0)为起始点；大家可能还是有点迷糊，下面我们就举个例子来看看
+     我们利用quadTo()来画下面的这条波浪线：
+
+     分析：
+     我们先看P0-P2这条轨迹，P0是起点，假设位置坐标是(100,300)，P2是终点，假充位置坐标是(300,300)；在以P0为起始点，P2为终点这条二阶贝赛尔曲线上，P1是控制点，很明显P1大概在P0,P2中间的位置，所以它的X坐标应该是200，关于Y坐标，我们无法确定，但很明显的是P1在P0,P2点的上方，也就是它的Y值比它们的小，所以根据钢笔工具上面的位置，我们让P1的比P0,P2的小100;所以P1的坐标是（200，200）
+     同理，不难求出在P2,P4这条二阶贝赛尔曲线上，它们的控制点P3的坐标位置应该是(400,400)；P3的X坐标是400是，因为P3点是P2,P4的中间点；与P3与P1距离P0-P2-P4这条直线的距离应该是相等的。P1距离P0-P2的值为100；P3距离P2-P4的距离也应该是100，这样不难算出P3的坐标应该是(400,400)；
+     下面开始是代码部分了。
+
+
+     总结：
+     整条线的起始点是通过Path.moveTo(x,y)来指定的，如果初始没有调用Path.moveTo(x,y)来指定起始点，则默认以控件左上角(0,0)为起始点；
+     而如果我们连续调用quadTo()，前一个quadTo()的终点，就是下一个quadTo()函数的起点；
+     * @param canvas
+     */
+    private void doSin(Canvas canvas) {
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        paint.setColor(Color.GREEN);
+
+        Path path = new Path();
+        path.moveTo(100,300);
+        // 控制点
+        path.quadTo(200,200,300,300);
+        path.quadTo(400,400,500,300);
+
+        canvas.drawPath(path,paint);
     }
 
     /**
@@ -1461,7 +1591,9 @@ public class MyView extends View {
         Save_restore(29), More_save(30), 
         DrawText(31), SetTextAlign(32), 
         Adtb(33), What(34),
-        Write_left(35), Write_center(36);
+        Write_left(35), Write_center(36),
+        Gestures1(37), WaveView(38), 
+        Sin(39), rQuadTo(41);
 
         private int value = 0;
 
@@ -1553,6 +1685,14 @@ public class MyView extends View {
                     return Write_left;
                 case 36:
                     return Write_center;
+                case 37:
+                    return Gestures1;
+                case 38:
+                    return WaveView;
+                case 39:
+                    return Sin;
+                case 41:
+                    return rQuadTo;
             }
             return null;
         }

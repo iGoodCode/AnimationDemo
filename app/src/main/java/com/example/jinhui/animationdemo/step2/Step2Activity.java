@@ -11,6 +11,7 @@ import com.example.jinhui.animationdemo.R;
 import com.example.jinhui.animationdemo.step2.canvasbase.CanvasBaseActivity;
 import com.example.jinhui.animationdemo.step2.canvasbase.drawtext.DrawTextActivity;
 import com.example.jinhui.animationdemo.step2.canvastransform.CanvasTransformActivity;
+import com.example.jinhui.animationdemo.step2.path.PathActivity;
 import com.example.jinhui.animationdemo.step2.pathtext.PathTextActivity;
 import com.example.jinhui.animationdemo.step2.range.RangeActivity;
 
@@ -68,6 +69,7 @@ public class Step2Activity extends AppCompatActivity {
                 startActivity(new Intent(this, DrawTextActivity.class));
                 break;
             case R.id.bt_Path:
+                startActivity(new Intent(this, PathActivity.class));
                 break;
             case R.id.bt_Paths:
                 break;

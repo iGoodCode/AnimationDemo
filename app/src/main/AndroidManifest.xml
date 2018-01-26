@@ -43,6 +43,9 @@
         <activity android:name=".step2.range.CanvasRangeActivity"/>
         <activity android:name=".step2.canvastransform.CanvasTransformActivity"/>
         <activity android:name=".step2.canvasbase.drawtext.DrawTextActivity"/>
+        <activity android:name=".step2.path.PathActivity"/>
+        <activity android:name=".step2.path.gestures.GesturesActivity"/>
+        <activity android:name=".step2.path.waveview.WaveViewActivity"/>
 
     </application>
 
